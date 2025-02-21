@@ -1,4 +1,9 @@
+import { useState } from "react";
+import { SearchBar } from "./searchBar";
+import { SetResultList } from "./SearchResultsList";
+
 export default function NavBar() {
+  const [results, setResults] = useState([])
   return (
     <>
       <section className="container">
@@ -16,11 +21,15 @@ export default function NavBar() {
         </div>
 
         <div className="bthree">
-        <div id="input">
-          <input id="amount-input" placeholder="Search Movies, Series..."
+        <div id="inpute">
+          {/* <input id="amount-input" placeholder="Search Movies, Series..."
           />
-          <img src="\src\assets\Group (1).png" alt="" />
-        
+          <img src="\src\assets\Group (1).png" alt="" /> */}
+        <SearchBar setResults={setResults}/>
+        <SetResultList results= {results}/>
+        <div>
+           
+        </div>
         </div>
 
         <img src="\src\assets\Ellipse 14.png" alt="" />

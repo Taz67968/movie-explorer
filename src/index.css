@@ -198,7 +198,7 @@ input {
     width: 138px;
     height: 178px;
     border-radius: 12px;
-    border: 1px solid white;
+    border: 1px solid black;
     z-index: 2;
     top: 80px;
     left: 60px;
@@ -239,7 +239,17 @@ input {
     width: 251px;
     height: 171px;
     border-radius: 17px;
-    border: 1px solid white;
+    border: 1px solid black;
+    object-fit: cover;
+  }
+}
+
+.on {
+  img {
+    width: 251px;
+    height: 171px;
+    border-radius: 17px;
+    border: 1px solid black;
     object-fit: cover;
   }
 }
@@ -249,7 +259,7 @@ input {
     width: 251px;
     height: 171px;
     border-radius: 17px;
-    border: 1px solid white;
+    border: 1px solid black;
     object-fit: cover;
   }
 }
@@ -259,7 +269,7 @@ input {
     width: 251px;
     height: 171px;
     border-radius: 17px;
-    border: 1px solid white;
+    border: 1px solid black;
     object-fit: cover;
   }
 }
@@ -274,8 +284,7 @@ input {
     font-weight: 500;
     font-size: 28px;
     margin-top: 10px;
-    margin-bottom: 10px;
-    width: 87px;
+    margin-bottom: -6px;
   }
 }
 
@@ -291,6 +300,29 @@ input {
     margin-bottom: 10px;
     width: 87px;
   }
+}
+
+.bmma {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 40px;
+  margin-right: 40px;
+  h1 {
+    font-weight: 500;
+    font-size: 28px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+.pt {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: black transparent;
+
+  gap: 29px;
 }
 
 .bamm {
@@ -365,4 +397,24 @@ input {
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.bar {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 20px;
+  padding: 1rem;
+  background-color: #000;
+  color: #fff;
+}
+
+.same {
+  display: flex;
+  width: auto;
+  gap: 1rem;
+  img {
+    width: 19%;
+    height: 41px;
+    border-radius: 40%;
+  }
 }

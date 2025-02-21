@@ -5,12 +5,16 @@ import NavBar from "../components/nav";
 import Footer from "../components/footer";
 import fetchMovieLike from "../service/likes";
 import MovieslistsLike from "../components/movies5";
+// import fetchMovieCast from "../service/cast";
+import MoviesCast from "../components/Moveis6";
+import Topcasts from "../components/moviesCast";
 
 export default function Details() {
   const location = useLocation();
   const { movie } = location.state || {};
   const [movieDetails, setMovieDetails] = useState(null);
   const [like, setLike] = useState([])
+  // const [cast, setCast] = useState([])
   useEffect(() => {
     // console.log(movie)
     if (movie) {
@@ -28,12 +32,14 @@ export default function Details() {
 
     useEffect(() => {
       getMovieLike();
+
     }, []);
     async function getMovieLike() {
       const like = await fetchMovieLike();
       console.log(like);
       setLike(like);
     }
+    
 
   return (
     <>
@@ -76,7 +82,9 @@ export default function Details() {
 
         {movieDetails && <div></div>}
       </div>
+      <Topcasts/>
 
+     
   <div className="bamm">
         <h1>More Likes</h1>
           <div className="rep">
