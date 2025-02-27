@@ -418,3 +418,41 @@ input {
     border-radius: 40%;
   }
 }
+
+@media only screen and (max-width: 720px) {
+  body {
+    background-color: black;
+  }
+
+  .btwo {
+    display: none;
+  }
+
+  .bthree {
+    img {
+      display: none;
+    }
+  }
+
+  .containertwo {
+    display: block;
+  }
+
+  .d{
+    display: block;
+  }
+
+  input{
+    width: 40%;
+  }
+
+  .bsix {
+    p {
+       display: inline-block;
+    }
+  }
+
+  .i {
+    justify-content: center;
+  }
+}
