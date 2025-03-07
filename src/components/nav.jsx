@@ -14,11 +14,11 @@ export default function NavBar() {
             </h1>
           </div>
           <div className="btwo">
-            <a href="">Home</a>
-            <a href="">Movies</a>
-            <a href="">Series</a>
-            <a href="">Trending</a>
-            <a href="">Categories</a>
+            <a href="/">Home</a>
+            <a href="/">Movies</a>
+            <a href="/">Series</a>
+            <a href="/">Trending</a>
+            <a href="/">Categories</a>
           </div>
         </div>
 
