@@ -53,7 +53,9 @@ export default function Details() {
           textAlign:'center',
         }}
       >
-        <NavBar />
+        <NavBar  style={{
+          position: 'absolute',
+        }}/>
        <div className="h">
       <div className="m">
       <h1>{movie.title}</h1>

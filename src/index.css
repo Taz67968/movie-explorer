@@ -18,7 +18,8 @@ body {
   display: flex;
   justify-content: space-between;
   width: 29%;
-  align-items: center;
+  /* align-items: center; */
+  margin: 20px;
 }
 
 .bone {
