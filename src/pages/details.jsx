@@ -46,8 +46,8 @@ export default function Details() {
       <div
         style={{
           backgroundImage: `linear-gradient(rgba(58, 64, 66, 0.5), rgba(47, 54, 56, 0.5)), url(https://image.tmdb.org/t/p/w500${movie.poster_path})`,
-          width: "100%",
-          height: "100%",
+          // width: "fit-content",
+          // height: "100%",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           textAlign:'center',

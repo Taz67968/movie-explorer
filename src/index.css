@@ -12,6 +12,7 @@ body {
 .container {
   display: flex;
   justify-content: space-between;
+  width: 94%;
 }
 
 .box {
@@ -51,9 +52,9 @@ input {
   background-color: transparent;
   color: white;
   border: 1px solid white;
-  padding: 10px;
+  padding: 3px;
   margin-top: 8px;
-  border-radius: 25%;
+  border-radius: 40px;
 }
 
 #input {
@@ -89,7 +90,7 @@ input {
   margin-top: 9px;
   margin-bottom: 9px;
   button {
-    padding: 6px 12px 6px 12px;
+    padding: 6px 0px 6px 0px;
     background-color: transparent;
     color: white;
     width: 107px;
@@ -106,7 +107,7 @@ input {
 
   .btnone {
     background-color: white;
-    width: 140px;
+    width: 200px;
     height: 35px;
     border-radius: 36px;
     display: flex;
@@ -117,7 +118,7 @@ input {
 
   .btntwo {
     background-color: transparent;
-    width: 140px;
+    width: 200px;
     height: 35px;
     border-radius: 36px;
     color: white;
@@ -128,11 +129,12 @@ input {
 .mealz {
   background: linear-gradient(rgba(58, 64, 66, 0.5), rgba(47, 54, 56, 0.5)),
     url(https://s3-alpha-sig.figma.com/img/5909/0ea8/b488be9c50166f91c91c010eec13fd2e?Expires=1740960000&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Z2e~O2oR2fnZHBfIex1ayEB1leOzYkIEc9-o6-SGAriQyrDFFBCHUK6U51qoCvYOboF6C~J48UtxrFu3KxCP-QF19YNJX07~OrpUeK7OwBPqx~KYPk2R~Ni1-GLwcR6za5I7RdC1tjkI-BoNiYuoZxW~gn-9nRIod4AA6s~1kwn-b6RjRH~r8wyz98IO4zPgERXnKxANGIn5jbJcVcZKZDbdesAvzwE3SZOvoja2rdCCdKP7aSKmoOOeeqpVzO4EFN3zf7tKHkOWZHCB~iM-v7OOoGm7KMcnnYMIwsvAQp279mxTc1cJYTxC2LnCSTDIUvzuHFekHPcr9G~ubL-TzQ__);
+  width: 100%;
 }
 
 .containertwo {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   text-align: center;
   border-bottom: 1px solid #b7b3b3;
   h1 {
@@ -164,7 +166,7 @@ input {
 
 .d {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-top: 8px;
   align-items: center;
 
@@ -212,6 +214,7 @@ input {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: black transparent;
+  margin-left: -70px;
 }
 
 .re {
@@ -322,7 +325,6 @@ input {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: black transparent;
-
   gap: 29px;
 }
 
@@ -385,12 +387,12 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: fit-content;
 
   .m {
     text-align: center;
     align-items: center;
     width: 50%;
+    margin-bottom: 12px;
   }
 }
 
@@ -421,7 +423,7 @@ input {
   }
 }
 .result-list {
-  background-color: black;
+  background-color: rgba(58, 64, 66, 0.5);
   text-align: justify;
 }
 
@@ -437,6 +439,9 @@ input {
   .bar {
     overflow: scroll;
   }
+  /* .bamm {
+    width: 100%;
+  } */
 
   .btwo {
     display: none;
@@ -448,21 +453,61 @@ input {
     }
   }
 
+  .bfour {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .bfive {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .bsix {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .bseven {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .beight {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
   .containertwo {
     display: block;
   }
 
-  .d{
+  .d {
     display: block;
   }
 
-  input{
+  .m {
+    h1 {
+      font-size: 25px;
+    }
+  }
+
+  .sp {
+    width: 126%;
+    margin-left: -14px;
+  }
+
+  .h {
+    width: auto;
+  }
+
+  input {
     width: 40%;
   }
 
   .bsix {
     p {
-       display: inline-block;
+      display: inline-block;
     }
   }
 
@@ -470,12 +515,17 @@ input {
     justify-content: center;
   }
   .rep {
-    display: block;
-    gap: 0px;
+    display: flex;
+    gap: 10px;
     justify-items: center;
+    overflow: scroll;
+
     div {
       margin-top: 20px;
       margin-bottom: 20px;
     }
+  }
+  .spi {
+    width: 209%;
   }
 }

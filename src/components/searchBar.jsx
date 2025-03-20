@@ -2,8 +2,11 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
+const API_KEY ="Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0ZWYzNjNmOWY5YTNjNTUzNTE0OWM5MDk3MGZhMjMxMSIsIm5iZiI6MTczMzUxMDAxOS40MTYsInN1YiI6IjY3NTM0MzgzODcxYTQyYzljMjQ1NDFhNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.FgU6EplfTnUB-e6GZZfUI7lO0Ad71oYwG54qzjXpozo"
+
 export const SearchBar = ({ setResults }) => {
   const [input, setInput] = useState("");
+  
 
   const fetchData = (value) => {
     const options = {
@@ -15,7 +18,7 @@ export const SearchBar = ({ setResults }) => {
       },
     };
     fetch(
-      'https://api.themoviedb.org/3/discover/movie',
+      `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(value)}`,
       options
     )
       .then((res) => res.json())
