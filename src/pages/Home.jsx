@@ -22,7 +22,7 @@ export default function Home() {
 
   const navigate = useNavigate();
 
-  const handleMovieClick = (movie) => {
+ const handleMovieClick = (movie) => {
     navigate(`/Details/${movie.id}`, { state: { movie } });
   };
 

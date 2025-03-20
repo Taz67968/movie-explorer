@@ -384,6 +384,7 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: fit-content;
 
   .m {
     text-align: center;
@@ -418,10 +419,22 @@ input {
     border-radius: 40%;
   }
 }
+.result-list {
+  background-color: black;
+  text-align: justify;
+}
 
 @media only screen and (max-width: 720px) {
   body {
     background-color: black;
+  }
+
+  h {
+    width: 100%;
+  }
+
+  .bar {
+    overflow: scroll;
   }
 
   .btwo {
@@ -454,5 +467,14 @@ input {
 
   .i {
     justify-content: center;
+  }
+  .rep {
+    display: block;
+    gap: 0px;
+    justify-items: center;
+    div {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
   }
 }

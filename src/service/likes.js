@@ -1,7 +1,7 @@
 const API_KEY ="Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0ZWYzNjNmOWY5YTNjNTUzNTE0OWM5MDk3MGZhMjMxMSIsIm5iZiI6MTczMzUxMDAxOS40MTYsInN1YiI6IjY3NTM0MzgzODcxYTQyYzljMjQ1NDFhNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.FgU6EplfTnUB-e6GZZfUI7lO0Ad71oYwG54qzjXpozo"
 
 
-const BASE_MOVIE_URL =`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&include_adult=false&include_video=false&language=en-US&page=6&sort_by=popularity.desc`;
+const BASE_MOVIE_URL =`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&include_adult=false&include_video=false&language=en-US&page=2&sort_by=popularity.desc`;
 export const fetchMovieLike= async() => {
     
  const options = {
@@ -18,7 +18,7 @@ export const fetchMovieLike= async() => {
             throw new Error('Failed to fetch meals')
         }
         const data = await response.json()
-        console.log(data.results)
+        // console.log(data.results)
          return data.results
        
  }

@@ -18,7 +18,7 @@ export const fetchMovieOne= async() => {
             throw new Error('Failed to fetch meals')
         }
         const data = await response.json()
-        console.log(data.results)
+        // console.log(data.results)
          return data.results
        
  }
