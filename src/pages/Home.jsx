@@ -12,6 +12,7 @@ import fetchMovieThree from "../service/contextthree";
 import { useNavigate } from "react-router-dom";
 import fetchMovieTop from "../service/top";
 import MoviesTop from "../components/Moveis6";
+import HeroCarousel from "../components/HeroCarousel";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -74,29 +75,7 @@ export default function Home() {
     <>
       <div className="mealz">
         <NavBar />
-        <div className="bbspi">
-          <div className="bspi">
-            <img src="\src\assets\Spiderman.png" alt="" />
-            <div className="spi">
-              <div className="sp">
-                <button className="btn">CBFC:U/A</button>
-                <p>Action . Adventure . 2h28m</p>
-              </div>
-              <p>
-                When a spell goes wrong, dangerous faes from other words start
-                to appear, forcing Peter to discover what it truly means to be
-                Spider-Man
-              </p>
-              <div className="s">
-                <button className="btnone">
-                  <img src="\src\assets\Group.png" alt="" />
-                  Watch Now
-                </button>
-                <button className="btntwo">More Info</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeroCarousel />
 
         <div className="to ">
           <h1>Latest and Trending</h1>
