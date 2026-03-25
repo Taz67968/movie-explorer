@@ -13,6 +13,9 @@ import { useNavigate } from "react-router-dom";
 import fetchMovieTop from "../service/top";
 import MoviesTop from "../components/Moveis6";
 import HeroCarousel from "../components/HeroCarousel";
+import MovieModal from "../components/MovieModal";
+import fetchTVShows from "../service/tvShows";
+import { fetchHorrorMovies, fetchSciFiMovies, fetchDocumentaryMovies, fetchAnimationMovies } from "../service/genres";
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
@@ -20,10 +23,24 @@ export default function Home() {
   const [action, setAction] = useState([]);
   const [comedy, setComedy] = useState([]);
   const [top, setTop] = useState([]);
+  const [tvShows, setTvShows] = useState([]);
+  const [horror, setHorror] = useState([]);
+  const [scifi, setScifi] = useState([]);
+  const [documentary, setDocumentary] = useState([]);
+  const [animation, setAnimation] = useState([]);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const navigate = useNavigate();
 
- const handleMovieClick = (movie) => {
+  const handleMovieClick = (movie) => {
+    setSelectedMovie(movie);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMovie(null);
+  };
+
+  const handleWatchNow = (movie) => {
     navigate(`/Details/${movie.id}`, { state: { movie } });
   };
 
@@ -71,6 +88,47 @@ export default function Home() {
     console.log(top);
     setTop(top);
   }
+
+  useEffect(() => {
+    getTVShows();
+  }, []);
+  async function getTVShows() {
+    const shows = await fetchTVShows();
+    setTvShows(shows);
+  }
+
+  useEffect(() => {
+    getHorrorMovies();
+  }, []);
+  async function getHorrorMovies() {
+    const horrorMovies = await fetchHorrorMovies();
+    setHorror(horrorMovies);
+  }
+
+  useEffect(() => {
+    getSciFiMovies();
+  }, []);
+  async function getSciFiMovies() {
+    const scifiMovies = await fetchSciFiMovies();
+    setScifi(scifiMovies);
+  }
+
+  useEffect(() => {
+    getDocumentaryMovies();
+  }, []);
+  async function getDocumentaryMovies() {
+    const docMovies = await fetchDocumentaryMovies();
+    setDocumentary(docMovies);
+  }
+
+  useEffect(() => {
+    getAnimationMovies();
+  }, []);
+  async function getAnimationMovies() {
+    const animMovies = await fetchAnimationMovies();
+    setAnimation(animMovies);
+  }
+
   return (
     <>
       <div className="mealz">
@@ -133,7 +191,76 @@ export default function Home() {
         </div>
       </div>
 
+      {/* TV Shows Section */}
+      <div className="bbmn">
+        <h1>TV Shows</h1>
+        <div className="re">
+          {tvShows.map((show) => (
+            <div key={show.id} onClick={() => handleMovieClick(show)}>
+              <MovieslistsTwo movie={show} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Horror Section */}
+      <div className="bbmn">
+        <h1>Horror</h1>
+        <div className="re">
+          {horror.map((movie) => (
+            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
+              <MovieslistsTwo movie={movie} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Sci-Fi Section */}
+      <div className="bbmn">
+        <h1>Sci-Fi</h1>
+        <div className="re">
+          {scifi.map((movie) => (
+            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
+              <MovieslistsTwo movie={movie} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Documentary Section */}
+      <div className="bbmn">
+        <h1>Documentary</h1>
+        <div className="re">
+          {documentary.map((movie) => (
+            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
+              <MovieslistsTwo movie={movie} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Animation Section */}
+      <div className="bbmn">
+        <h1>Animation</h1>
+        <div className="re">
+          {animation.map((movie) => (
+            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
+              <MovieslistsTwo movie={movie} />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <Footer />
+
+      {/* Movie Modal */}
+      {selectedMovie && (
+        <MovieModal 
+          movie={selectedMovie} 
+          onClose={handleCloseModal}
+          onWatchNow={handleWatchNow}
+        />
+      )}
     </>
   );
 }

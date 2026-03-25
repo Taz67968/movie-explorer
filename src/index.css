@@ -516,11 +516,278 @@ input {
   color: white;
 }
 
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  position: relative;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-background {
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+}
+
+.modal-gradient {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.95));
+  border-radius: 16px;
+  padding: 40px;
+}
+
+.modal-body {
+  display: flex;
+  gap: 30px;
+}
+
+.modal-poster img {
+  width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.modal-info {
+  flex: 1;
+}
+
+.modal-rating {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.rating-badge {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+}
+
+.modal-rating span {
+  color: #ccc;
+  font-size: 14px;
+}
+
+.modal-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.modal-genres {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-genres span {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #ccc;
+}
+
+.modal-overview {
+  color: #ddd;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.modal-watch-btn {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+
+.modal-watch-btn:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.modal-cast-section,
+.modal-stars-section {
+  margin-top: 20px;
+}
+
+.modal-cast-section h3,
+.modal-stars-section h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #ff4949;
+}
+
+.modal-cast-list,
+.modal-stars-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.modal-cast-item,
+.modal-star-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-cast-item img,
+.modal-star-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.cast-name,
+.star-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cast-character,
+.star-character {
+  font-size: 11px;
+  color: #aaa;
+}
+
+@media (max-width: 768px) {
+  .modal-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .modal-poster img {
+    width: 150px;
+  }
+  
+  .modal-rating,
+  .modal-genres {
+    justify-content: center;
+  }
+  
+  .modal-cast-list,
+  .modal-stars-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .video-player-container {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  padding: 100px 20px 40px;
+  padding: 80px 20px 40px;
+}
+
+.video-controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.stream-btn {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.stream-btn:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+}
+
+.download-btn {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
 }
 
 .video-player {

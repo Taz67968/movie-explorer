@@ -54,9 +54,14 @@ export default function Details() {
   // Get stars (typically the first few billed cast members)
   const stars = cast.slice(0, 3);
 
-  // Get trailer video if available
+  // Get full movie/video - use trailer as placeholder since TMDB doesn't provide full movies
   const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube');
   const videoKey = trailer ? trailer.key : (videos[0] ? videos[0].key : null);
+
+  const handleDownloadMovie = () => {
+    // In a real app, this would trigger a download
+    alert('Download feature would be available in the full version');
+  };
 
   return (
     <div className="streaming-page">
@@ -71,12 +76,12 @@ export default function Details() {
       {/* Streaming Video Player */}
       <div className="video-player-container">
         {videoKey ? (
-          <div className="video-player">
+          <div className="video-player" id="movie-player">
             <iframe
               width="100%"
               height="100%"
               src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0`}
-              title="Movie Trailer"
+              title="Movie"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -88,10 +93,20 @@ export default function Details() {
               <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <p>No trailer available</p>
+              <p>No video available</p>
             </div>
           </div>
         )}
+        
+        {/* Download Button Below Video */}
+        <div className="video-controls">
+          <button className="download-btn" onClick={handleDownloadMovie}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+            Download
+          </button>
+        </div>
       </div>
 
       {/* Movie Title with Dropdown */}
