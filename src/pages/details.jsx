@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import fetchMovieDetails from "../service/movieDetails";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
+import { getStreamingLinks, getDownloadLinks } from "../service/streaming";
 
 export default function Details() {
   const location = useLocation();
@@ -12,6 +13,11 @@ export default function Details() {
   const [videos, setVideos] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [streamingLinks, setStreamingLinks] = useState([]);
+  const [downloadLinks, setDownloadLinks] = useState([]);
+  const [activeServer, setActiveServer] = useState(0);
+  const [showServers, setShowServers] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
     if (movie) {
@@ -26,6 +32,13 @@ export default function Details() {
           setVideos(data.results || []);
         }
       });
+      
+      // Get streaming links from our service
+      getStreamingLinks(movie.id)
+        .then(links => setStreamingLinks(links));
+      
+      getDownloadLinks(movie.title || movie.original_title)
+        .then(links => setDownloadLinks(links));
     }
     setLoading(false);
   }, [movie]);
@@ -49,18 +62,21 @@ export default function Details() {
     setShowDetails(!showDetails);
   };
 
-  // Get top 6 cast members from API
   const mainCast = cast.slice(0, 6);
-  // Get stars (typically the first few billed cast members)
   const stars = cast.slice(0, 3);
 
-  // Get full movie/video - use trailer as placeholder since TMDB doesn't provide full movies
-  const trailer = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube');
-  const videoKey = trailer ? trailer.key : (videos[0] ? videos[0].key : null);
+  const handleServerChange = (index) => {
+    setActiveServer(index);
+    setShowServers(false);
+    setIsStreaming(true);
+  };
 
-  const handleDownloadMovie = () => {
-    // In a real app, this would trigger a download
-    alert('Download feature would be available in the full version');
+  const handleStreamMovie = () => {
+    setIsStreaming(true);
+  };
+
+  const handleDownloadMovie = (link) => {
+    window.open(link.url, '_blank');
   };
 
   return (
@@ -75,38 +91,82 @@ export default function Details() {
       
       {/* Streaming Video Player */}
       <div className="video-player-container">
-        {videoKey ? (
-          <div className="video-player" id="movie-player">
+        <div className="video-player" id="movie-player">
+          {isStreaming && streamingLinks.length > 0 ? (
             <iframe
               width="100%"
               height="100%"
-              src={`https://www.youtube.com/embed/${videoKey}?autoplay=1&rel=0`}
-              title="Movie"
+              src={streamingLinks[activeServer].url}
+              title="Movie Streaming"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
-          </div>
-        ) : (
-          <div className="video-player">
-            <div className="video-placeholder">
+          ) : (
+            <div className="video-placeholder streaming-placeholder">
               <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
                 <path d="M8 5v14l11-7z"/>
               </svg>
-              <p>No video available</p>
+              <p>Select a server to stream</p>
+              <p className="server-hint">Click on a server below, then press Stream Movie</p>
             </div>
+          )}
+        </div>
+        
+        {/* Server Selection */}
+        {streamingLinks.length > 0 && (
+          <div className="server-selector">
+            <div className="server-tabs">
+              <button 
+                className={`server-tab ${!showServers ? 'active' : ''}`}
+                onClick={() => setShowServers(false)}
+              >
+                Stream
+              </button>
+              <button 
+                className={`server-tab ${showServers ? 'active' : ''}`}
+                onClick={() => setShowServers(true)}
+              >
+                Download
+              </button>
+            </div>
+            
+            {!showServers ? (
+              <div className="server-list">
+                {streamingLinks.map((link, index) => (
+                  <button
+                    key={index}
+                    className={`server-item ${activeServer === index ? 'active' : ''}`}
+                    onClick={() => handleServerChange(index)}
+                  >
+                    <span className="server-name">{link.server}</span>
+                    <span className="server-quality">{link.quality}</span>
+                  </button>
+                ))}
+                <button className="stream-btn" onClick={handleStreamMovie}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Stream Movie
+                </button>
+              </div>
+            ) : (
+              <div className="server-list">
+                {downloadLinks.map((link, index) => (
+                  <button
+                    key={index}
+                    className="server-item download-item"
+                    onClick={() => handleDownloadMovie(link)}
+                  >
+                    <span className="server-name">{link.server}</span>
+                    <span className="server-quality">{link.quality}</span>
+                    <span className="server-size">{link.size}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
-        
-        {/* Download Button Below Video */}
-        <div className="video-controls">
-          <button className="download-btn" onClick={handleDownloadMovie}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-            </svg>
-            Download
-          </button>
-        </div>
       </div>
 
       {/* Movie Title with Dropdown */}

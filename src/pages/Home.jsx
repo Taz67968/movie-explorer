@@ -135,18 +135,6 @@ export default function Home() {
         <NavBar />
         <HeroCarousel />
 
-        <div className="to ">
-          <h1>Latest and Trending</h1>
-          <div className="bm">
-            {movies.map((movie, index) => (
-              <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-                <Movieslists movie={movie} index={index + 1} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <div className="bmma">
         <h1>Top Searches</h1>
         <div className="pt">
@@ -261,6 +249,7 @@ export default function Home() {
           onWatchNow={handleWatchNow}
         />
       )}
+      </div>
     </>
   );
 }

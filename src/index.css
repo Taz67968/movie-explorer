@@ -189,23 +189,53 @@ input {
   display: flex;
   position: relative;
   margin: 0 50px;
-  p {
-    font-weight: 1000;
-    font-size: 250px;
-    line-height: 298.34px;
-    z-index: 1;
-  }
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
 
-  img {
-    position: absolute;
-    width: 138px;
-    height: 178px;
-    border-radius: 12px;
-    border: 1px solid black;
-    z-index: 2;
-    top: 80px;
-    left: 60px;
-  }
+.one:hover {
+  transform: scale(1.05);
+}
+
+.one p {
+  font-weight: 1000;
+  font-size: 250px;
+  line-height: 298.34px;
+  z-index: 1;
+}
+
+.one img {
+  position: absolute;
+  width: 138px;
+  height: 178px;
+  border-radius: 12px;
+  border: 1px solid black;
+  z-index: 2;
+  top: 80px;
+  left: 60px;
+}
+
+.one::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.one:hover::after {
+  opacity: 1;
+}
+
+.one .movie-title {
+  display: none;
 }
 
 .bm {
@@ -750,24 +780,120 @@ input {
   justify-content: center;
 }
 
+/* Server Selection Styles */
+.server-selector {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.server-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.server-tab {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.server-tab.active {
+  background: #ff4949;
+  border-color: #ff4949;
+}
+
+.server-tab:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.server-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.server-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.server-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.server-item.active {
+  border-color: #ff4949;
+  background: rgba(255, 73, 73, 0.1);
+}
+
+.server-item.download-item {
+  justify-content: flex-start;
+  gap: 15px;
+}
+
+.server-name {
+  color: white;
+  font-weight: 500;
+}
+
+.server-quality {
+  color: #888;
+  font-size: 12px;
+}
+
+.server-size {
+  color: #4CAF50;
+  font-size: 12px;
+}
+
+.streaming-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.server-hint {
+  color: #888;
+  font-size: 14px;
+}
+
 .stream-btn {
   background-color: white;
   color: black;
   border: none;
-  padding: 12px 28px;
+  padding: 14px 28px;
   border-radius: 30px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
+  margin-top: 15px;
   transition: all 0.3s ease;
 }
 
 .stream-btn:hover {
   background-color: #e0e0e0;
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .download-btn {

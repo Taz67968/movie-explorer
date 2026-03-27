@@ -9,6 +9,7 @@ function MoviesTop({movie}  ) {
       <img src= {
         movie.poster_path
         ?`https://image.tmdb.org/t/p/w500${movie.poster_path}`: 'fallback_image_url'} alt={movie.original_title} />
+      <div className="movie-title">{movie.title || movie.original_title}</div>
     </div>
   );
 }
