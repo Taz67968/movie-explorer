@@ -8,6 +8,7 @@ export const SearchBar = ({ setResults }) => {
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const [debouncedInput, setDebouncedInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Debounce user input
   useEffect(() => {
@@ -29,6 +30,15 @@ export const SearchBar = ({ setResults }) => {
   }, [debouncedInput]);
 
   const fetchData = async (query) => {
+    if (!query.trim()) {
+      setResults([]);
+      setError("");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
     try {
       const response = await fetch(
         `https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
@@ -50,27 +60,50 @@ export const SearchBar = ({ setResults }) => {
       setError(results.length === 0 ? "No results found." : "");
     } catch (err) {
       setError(err.message || "Failed to fetch results.");
+      setResults([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return (
-   <>
-    <div id="input">
-      <input
-        id="amount-input"
-        placeholder="Search Movies, Series..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
-      <FaSearch id="search-icon" />
-      
-    </div>
+  const handleClear = () => {
+    setInput("");
+    setResults([]);
+    setError("");
+  };
 
-    <div>
-    {error && <div className="error-message">{error}</div>}
-    </div>
-    
-   </>
+  return (
+    <>
+      <div id="input">
+        <input
+          id="amount-input"
+          placeholder="Search Movies, Series..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          aria-label="Search movies and series"
+        />
+        {isLoading ? (
+          <div className="search-loading">
+            <div className="search-spinner"></div>
+          </div>
+        ) : (
+          <FaSearch id="search-icon" />
+        )}
+        {input && (
+          <button 
+            className="search-clear-btn"
+            onClick={handleClear}
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
+      </div>
+
+      {error && (
+        <div className="error-message">{error}</div>
+      )}
+    </>
   );
 };
 

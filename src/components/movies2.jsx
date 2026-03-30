@@ -1,21 +1,13 @@
 import PropTypes from "prop-types";
-// import fooddetails from "./pages/fooddetails"
-function MovieslistsTwo({movie}  ) {
-  return (
-    <div className="two" >
+import MovieCard from "./MovieCard";
 
-        {/* <h2>{movie.original_title}</h2> */}
-      <img src= {
-        movie.poster_path
-        ?`https://image.tmdb.org/t/p/w500${movie.poster_path}`: 'fallback_image_url'} alt={movie.original_title} />
-      <div className="movie-title">{movie.title || movie.original_title}</div>
-    </div>
-  );
+function MovieslistsTwo({ movie, onClick }) {
+  return <MovieCard movie={movie} onClick={onClick} variant="default" />;
 }
 
 MovieslistsTwo.propTypes = {
   movie: PropTypes.object.isRequired,
-  index: PropTypes.number
+  onClick: PropTypes.func,
 };
 
 export default MovieslistsTwo;

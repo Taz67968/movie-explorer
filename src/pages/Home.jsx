@@ -1,7 +1,6 @@
 import NavBar from "../components/nav";
 import Footer from "../components/footer";
 import { useState, useEffect } from "react";
-import Movieslists from "../components/movies1";
 import fetchMovie from "../service/context";
 import fetchMovieOne from "../service/contextone";
 import MovieslistsTwo from "../components/movies2";
@@ -18,7 +17,6 @@ import fetchTVShows from "../service/tvShows";
 import { fetchHorrorMovies, fetchSciFiMovies, fetchDocumentaryMovies, fetchAnimationMovies } from "../service/genres";
 
 export default function Home() {
-  const [movies, setMovies] = useState([]);
   const [release, setrelease] = useState([]);
   const [action, setAction] = useState([]);
   const [comedy, setComedy] = useState([]);
@@ -50,7 +48,6 @@ export default function Home() {
   async function getMovie() {
     const movies = await fetchMovie();
     console.log(movies);
-    setMovies(movies);
   }
 
   useEffect(() => {
@@ -139,9 +136,7 @@ export default function Home() {
         <h1>Top Searches</h1>
         <div className="pt">
           {top.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MoviesTop movie={movie} />
-            </div>
+            <MoviesTop key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -150,9 +145,7 @@ export default function Home() {
         <h1>Action</h1>
         <div className="re">
           {release.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsTwo movie={movie} />
-            </div>
+            <MovieslistsTwo key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -161,9 +154,7 @@ export default function Home() {
         <h1>Romance & Drama</h1>
         <div className="re">
           {action.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsThree movie={movie} />
-            </div>
+            <MovieslistsThree key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -172,9 +163,7 @@ export default function Home() {
         <h1>Comedy</h1>
         <div className="re">
           {comedy.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsFour movie={movie} />
-            </div>
+            <MovieslistsFour key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -184,9 +173,7 @@ export default function Home() {
         <h1>TV Shows</h1>
         <div className="re">
           {tvShows.map((show) => (
-            <div key={show.id} onClick={() => handleMovieClick(show)}>
-              <MovieslistsTwo movie={show} />
-            </div>
+            <MovieslistsTwo key={show.id} movie={show} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -196,9 +183,7 @@ export default function Home() {
         <h1>Horror</h1>
         <div className="re">
           {horror.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsTwo movie={movie} />
-            </div>
+            <MovieslistsTwo key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -208,9 +193,7 @@ export default function Home() {
         <h1>Sci-Fi</h1>
         <div className="re">
           {scifi.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsTwo movie={movie} />
-            </div>
+            <MovieslistsTwo key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -220,9 +203,7 @@ export default function Home() {
         <h1>Documentary</h1>
         <div className="re">
           {documentary.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsTwo movie={movie} />
-            </div>
+            <MovieslistsTwo key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
@@ -232,9 +213,7 @@ export default function Home() {
         <h1>Animation</h1>
         <div className="re">
           {animation.map((movie) => (
-            <div key={movie.id} onClick={() => handleMovieClick(movie)}>
-              <MovieslistsTwo movie={movie} />
-            </div>
+            <MovieslistsTwo key={movie.id} movie={movie} onClick={handleMovieClick} />
           ))}
         </div>
       </div>
