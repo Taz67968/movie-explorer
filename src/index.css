@@ -862,6 +862,18 @@ input {
   }
 }
 
+/* Series Page Styles */
+.series-page {
+  background-color: #000;
+  min-height: 100vh;
+}
+
+.series-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 100px 24px 40px;
+}
+
 /* Details Page Styles */
 .details-page {
   background-color: #0a0a0a;
@@ -962,6 +974,28 @@ input {
 
 .modal-close:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.modal-favorite-btn {
+  position: absolute;
+  top: 15px;
+  right: 60px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-favorite-btn:hover {
+  background: rgba(255, 73, 73, 0.3);
   transform: scale(1.1);
 }
 

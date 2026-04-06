@@ -1,30 +1,61 @@
-const API_KEY ="Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0ZWYzNjNmOWY5YTNjNTUzNTE0OWM5MDk3MGZhMjMxMSIsIm5iZiI6MTczMzUxMDAxOS40MTYsInN1YiI6IjY3NTM0MzgzODcxYTQyYzljMjQ1NDFhNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.FgU6EplfTnUB-e6GZZfUI7lO0Ad71oYwG54qzjXpozo"
+// Favorites service using localStorage
 
+const FAVORITES_KEY = 'movie_favorites';
 
-const BASE_MOVIE_URL =`https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&include_adult=false&include_video=false&language=en-US&page=2&sort_by=popularity.desc`;
-export const fetchMovieLike= async() => {
-    
- const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0ZWYzNjNmOWY5YTNjNTUzNTE0OWM5MDk3MGZhMjMxMSIsIm5iZiI6MTczMzUxMDAxOS40MTYsInN1YiI6IjY3NTM0MzgzODcxYTQyYzljMjQ1NDFhNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.FgU6EplfTnUB-e6GZZfUI7lO0Ad71oYwG54qzjXpozo",
-    },
-  };
-    try {
-        const response = await fetch(BASE_MOVIE_URL,options)
-        if (!response.ok) {
-            throw new Error('Failed to fetch meals')
-        }
-        const data = await response.json()
-        // console.log(data.results)
-         return data.results
-       
- }
- 
- catch (error) {
-        console.error('Failed to fetch movie', error)
+export const getFavorites = () => {
+  try {
+    const favorites = localStorage.getItem(FAVORITES_KEY);
+    return favorites ? JSON.parse(favorites) : [];
+  } catch (error) {
+    console.error('Error getting favorites:', error);
+    return [];
+  }
+};
+
+export const addToFavorites = (movie) => {
+  try {
+    const favorites = getFavorites();
+    // Check if already in favorites
+    if (!favorites.some(f => f.id === movie.id)) {
+      const updatedFavorites = [...favorites, movie];
+      localStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
+      return true;
     }
-}
-export default fetchMovieLike
+    return false;
+  } catch (error) {
+    console.error('Error adding to favorites:', error);
+    return false;
+  }
+};
+
+export const removeFromFavorites = (movieId) => {
+  try {
+    const favorites = getFavorites();
+    const updatedFavorites = favorites.filter(f => f.id !== movieId);
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
+    return true;
+  } catch (error) {
+    console.error('Error removing from favorites:', error);
+    return false;
+  }
+};
+
+export const isFavorite = (movieId) => {
+  try {
+    const favorites = getFavorites();
+    return favorites.some(f => f.id === movieId);
+  } catch (error) {
+    console.error('Error checking favorite:', error);
+    return false;
+  }
+};
+
+export const clearFavorites = () => {
+  try {
+    localStorage.removeItem(FAVORITES_KEY);
+    return true;
+  } catch (error) {
+    console.error('Error clearing favorites:', error);
+    return false;
+  }
+};

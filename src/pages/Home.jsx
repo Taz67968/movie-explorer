@@ -15,6 +15,7 @@ import HeroCarousel from "../components/HeroCarousel";
 import MovieModal from "../components/MovieModal";
 import fetchTVShows from "../service/tvShows";
 import { fetchHorrorMovies, fetchSciFiMovies, fetchDocumentaryMovies, fetchAnimationMovies } from "../service/genres";
+import { getFavorites } from "../service/likes";
 
 export default function Home() {
   const [release, setrelease] = useState([]);
@@ -26,6 +27,7 @@ export default function Home() {
   const [scifi, setScifi] = useState([]);
   const [documentary, setDocumentary] = useState([]);
   const [animation, setAnimation] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   const navigate = useNavigate();
@@ -41,6 +43,14 @@ export default function Home() {
   const handleWatchNow = (movie) => {
     navigate(`/Details/${movie.id}`, { state: { movie } });
   };
+
+  const handleFavoriteChange = () => {
+    setFavorites(getFavorites());
+  };
+
+  useEffect(() => {
+    setFavorites(getFavorites());
+  }, []);
 
   useEffect(() => {
     getMovie();
@@ -131,6 +141,18 @@ export default function Home() {
       <div className="mealz">
         <NavBar />
         <HeroCarousel />
+
+        {/* Favorites Section */}
+        {favorites.length > 0 && (
+          <div className="bmma">
+            <h1>My Favorites</h1>
+            <div className="pt">
+              {favorites.slice(0, 6).map((movie) => (
+                <MoviesTop key={movie.id} movie={movie} onClick={handleMovieClick} />
+              ))}
+            </div>
+          </div>
+        )}
 
       <div className="bmma">
         <h1>Top Searches</h1>
@@ -226,6 +248,7 @@ export default function Home() {
           movie={selectedMovie} 
           onClose={handleCloseModal}
           onWatchNow={handleWatchNow}
+          onFavoriteChange={handleFavoriteChange}
         />
       )}
       </div>

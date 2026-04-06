@@ -26,7 +26,7 @@ export default function NavBar() {
           <div className="navbar-links">
             <a href="/" className="nav-link active">Home</a>
             <a href="/" className="nav-link">Movies</a>
-            <a href="/" className="nav-link">Series</a>
+            <a href="/Series" className="nav-link">Series</a>
             <a href="/" className="nav-link">Trending</a>
             <a href="/" className="nav-link">Categories</a>
           </div>
@@ -61,7 +61,7 @@ export default function NavBar() {
           <div className="mobile-nav-links">
             <a href="/" className="mobile-nav-link">Home</a>
             <a href="/" className="mobile-nav-link">Movies</a>
-            <a href="/" className="mobile-nav-link">Series</a>
+            <a href="/Series" className="mobile-nav-link">Series</a>
             <a href="/" className="mobile-nav-link">Trending</a>
             <a href="/" className="mobile-nav-link">Categories</a>
           </div>
