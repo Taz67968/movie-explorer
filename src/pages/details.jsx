@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import fetchMovieDetails from "../service/movieDetails";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
@@ -9,28 +9,33 @@ import { getStreamingLinks, getDownloadLinks } from "../service/streaming";
 export default function Details() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { movie } = location.state || {};
+  const { id } = useParams(); // Get movie ID from URL
+  const { movie: initialMovie } = location.state || {};
+  const fetchAttempted = useRef(false); // Track if we've tried to fetch movie data
+  
+  // Use state to persist movie data - check location.state first, then use URL param
+  const [movie, setMovie] = useState(initialMovie);
   
   // Debug: log navigation
   useEffect(() => {
-    console.log('Details mounted with movie:', location.state?.movie?.title, 'ID:', location.state?.movie?.id);
+    console.log('Details mounted with movie:', location.state?.movie?.title, 'ID:', location.state?.movie?.id, 'URL ID:', id);
     return () => console.log('Details unmounting');
   }, []);
   
   // Redirect if no movie data
-  useEffect(() => {
-    if (!movie) {
-      console.log('No movie data - redirecting to home');
-      navigate('/', { replace: true });
-    }
-  }, [movie]);
+  // useEffect(() => {
+  //   if (!movie) {
+  //     console.log('No movie data - redirecting to home');
+  //     navigate('/', { replace: true });
+  //   }
+  // }, [movie]);
   
   const [movieDetails, setMovieDetails] = useState(null);
   const [cast, setCast] = useState([]);
   const [videos, setVideos] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [streamingLinks, setStreamingLinks] = useState(null);
+  const [streamingLinks, setStreamingLinks] = useState([]);
   const [downloadLinks, setDownloadLinks] = useState([]);
   const [activeServer, setActiveServer] = useState(0);
   const [showServers, setShowServers] = useState(false);
@@ -44,6 +49,34 @@ export default function Details() {
 
   // Check if it's a TV show
   const isTVShow = !movie?.title && movie?.name;
+
+  useEffect(() => {
+    // If movie data is not in location.state but we have an ID from URL, fetch it
+    const hasInitialMovie = location.state?.movie;
+    if (!hasInitialMovie && id && !movie && !fetchAttempted.current) {
+      fetchAttempted.current = true; // Mark as attempted
+      console.log('No movie in state, fetching from ID:', id);
+      fetchMovieDetails(id).then(details => {
+        if (details) {
+          setMovie({
+            id: details.id,
+            title: details.title,
+            original_title: details.original_title,
+            name: details.name,
+            overview: details.overview,
+            poster_path: details.poster_path,
+            backdrop_path: details.backdrop_path,
+            release_date: details.release_date,
+            first_air_date: details.first_air_date,
+            vote_average: details.vote_average,
+            runtime: details.runtime
+          });
+        }
+      }).catch(err => {
+        console.error('Failed to fetch movie details:', err);
+      });
+    }
+  }, [id, movie]);
 
   useEffect(() => {
     if (movie) {
@@ -153,6 +186,8 @@ export default function Details() {
       setShowServers(false);
       setIsStreaming(true);
       console.log('Streaming URL:', streamingLinks[index].url);
+    } else {
+      console.log('No server at index:', index);
     }
   };
 

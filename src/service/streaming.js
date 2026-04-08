@@ -1,31 +1,56 @@
-// Streaming service - try different embed sources
-// Note: vidsrc sites are unreliable, try alternatives
+// Streaming service for movies and TV shows
+// Uses vidsrc.xyz, vidsrc.vip, and superembed
 
 export const getStreamingLinks = async (movieId, isTVShow = false, seasonNum = 1, episodeNum = 1) => {
   const tmdbId = movieId;
-  console.log('Getting streams for ID:', tmdbId, 'TV:', isTVShow);
   
   let servers = [];
   
   if (isTVShow) {
-    // TV Shows - try different embed sources
+    // TV Show streaming - use tv/ path with season and episode
     servers = [
-      { server: "TMTP 1", url: `https://tmtpflix.top/embed/tv/${tmdbId}`, quality: "720p" },
-      { server: "MovieAPI", url: `https://moviesapi.cx/tv/${tmdbId}`, quality: "720p" },
-      { server: "Super", url: `https://superembed.cc/embed/tv/${tmdbId}.html`, quality: "720p" }
+      {
+        server: "vidsrc TV",
+        url: `https://vidsrc.xyz/embed/tv/${tmdbId}?season=${seasonNum}&episode=${episodeNum}`,
+        quality: "720p"
+      },
+      {
+        server: "vidsrc VIP TV",
+        url: `https://vidsrc.vip/embed/tv/${tmdbId}.html?season=${seasonNum}&episode=${episodeNum}`,
+        quality: "720p"
+      },
+      {
+        server: "superembed TV", 
+        url: `https://superembed.cc/embed/tv/${tmdbId}.html?season=${seasonNum}&episode=${episodeNum}`,
+        quality: "720p"
+      }
     ];
   } else {
-    // Movies - use different sources (avoid vidsrc which shows wrong movie)
+    // Movie streaming
     servers = [
-      { server: "VoeRef", url: `https://voe.tv/e/${tmdbId}`, quality: "1080p" },
-      { server: "SuperE", url: `https://superembed.cc/embed/${tmdbId}.html`, quality: "720p" },
-      { server: "MTC1", url: `https://moviesapi.cx/embed/${tmdbId}`, quality: "720p" }
+      {
+        server: "vidsrc",
+        url: `https://vidsrc.xyz/embed/movie/${tmdbId}`,
+        quality: "1080p"
+      },
+      {
+        server: "vidsrc VIP",
+        url: `https://vidsrc.vip/embed/${tmdbId}`,
+        quality: "1080p"
+      },
+      {
+        server: "superembed", 
+        url: `https://superembed.cc/embed/${tmdbId}.html`,
+        quality: "720p"
+      }
     ];
   }
   
   return servers;
 };
 
-export const getDownloadLinks = async () => [];
+export const getDownloadLinks = async () => {
+  return [];
+};
 
 export default { getStreamingLinks, getDownloadLinks };
