@@ -1,77 +1,131 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import fetchMovieDetails from "../service/movieDetails";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
+import { fetchTVShowDetails, fetchSeasonEpisodes } from "../service/tvShowDetails";
 import { getStreamingLinks, getDownloadLinks } from "../service/streaming";
 
 export default function Details() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { movie } = location.state || {};
+  
+  // Debug: log navigation
+  useEffect(() => {
+    console.log('Details mounted with movie:', location.state?.movie?.title, 'ID:', location.state?.movie?.id);
+    return () => console.log('Details unmounting');
+  }, []);
+  
+  // Redirect if no movie data
+  useEffect(() => {
+    if (!movie) {
+      console.log('No movie data - redirecting to home');
+      navigate('/', { replace: true });
+    }
+  }, [movie]);
+  
   const [movieDetails, setMovieDetails] = useState(null);
   const [cast, setCast] = useState([]);
   const [videos, setVideos] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [streamingLinks, setStreamingLinks] = useState([]);
+  const [streamingLinks, setStreamingLinks] = useState(null);
   const [downloadLinks, setDownloadLinks] = useState([]);
   const [activeServer, setActiveServer] = useState(0);
   const [showServers, setShowServers] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [activeSeason, setActiveSeason] = useState(0);
   const [activeEpisode, setActiveEpisode] = useState(0);
+  
+  // TV Show data
+  const [tvShowDetails, setTvShowDetails] = useState(null);
+  const [seasonEpisodes, setSeasonEpisodes] = useState(null);
 
   // Check if it's a TV show
   const isTVShow = !movie?.title && movie?.name;
 
-  // Sample seasons data (would come from API in production)
-  const seasons = [
-    { season_number: 1, name: "Season 1", episode_count: 10, overview: "The first season introduces the main characters and sets up the story." },
-    { season_number: 2, name: "Season 2", episode_count: 10, overview: "The story continues with new challenges and revelations." },
-    { season_number: 3, name: "Season 3", episode_count: 10, overview: "The action heats up as the plot thickens." },
-    { season_number: 4, name: "Season 4", episode_count: 10, overview: "The final season brings closure to the story." },
-  ];
-
-  // Sample episodes for the active season
-  const episodes = [
-    { episode_number: 1, name: "Episode 1", overview: "The series premiere introduces the main characters.", still_path: "/ggFHVNu6YYI5n9EzX1nN2P9DzlWq.jpg" },
-    { episode_number: 2, name: "Episode 2", overview: "Tensions rise as secrets are revealed.", still_path: "/w21lgYIi9GeUH5dO8gj2A9olN2R.jpg" },
-    { episode_number: 3, name: "Episode 3", overview: "A shocking event changes everything.", still_path: "/7WUHnWGx5s1455xBr3Ohq3F32MR.jpg" },
-    { episode_number: 4, name: "Episode 4", overview: "Alliances are tested.", still_path: "/49WJfeN0moxb9IP39Gn8Pu2wPCo.jpg" },
-    { episode_number: 5, name: "Episode 5", overview: "A tragic loss affects everyone.", still_path: "/reEMJA1uzscCbkpeRLeTTgXOVo2.jpg" },
-    { episode_number: 6, name: "Episode 6", overview: "New information comes to light.", still_path: "/1E5baAaEse26fej7uHcjOgee2f2.jpg" },
-    { episode_number: 7, name: "Episode 7", overview: "Relationships are strained.", still_path: "/tsRy63Mu5cu8etL1X7ZLyfESUP8.jpg" },
-    { episode_number: 8, name: "Episode 8", overview: "The season finale brings a major revelation.", still_path: "/xKteX054U3r3NT2QPPc9HBLpUlG.jpg" },
-    { episode_number: 9, name: "Episode 9", overview: "Setbacks occur.", still_path: "/suopoAIqW9r8T6765tz6czuV7tnD.jpg" },
-    { episode_number: 10, name: "Episode 10", overview: "Things finally come to a head.", still_path: "/56v2KjBlU4XaOv9rVYEQypROD7P.jpg" },
-  ];
-
   useEffect(() => {
     if (movie) {
-      fetchMovieDetails(movie.id).then((data) => setMovieDetails(data));
-      fetchMovieCast(movie.id).then((data) => {
-        if (data) {
-          setCast(data.cast || []);
-        }
-      });
-      fetchMovieVideos(movie.id).then((data) => {
-        if (data) {
-          setVideos(data.results || []);
-        }
-      });
-      
-      const title = movie.title || movie.original_title || movie.name || "";
-      getStreamingLinks(movie.id)
-        .then(links => setStreamingLinks(links));
-      
-      getDownloadLinks(title)
-        .then(links => setDownloadLinks(links));
+      loadData();
     }
-    setLoading(false);
   }, [movie]);
 
+  async function loadData() {
+    setLoading(true);
+    try {
+      // Fetch basic movie/TV details
+      const details = await fetchMovieDetails(movie.id);
+      setMovieDetails(details);
+      
+      const castData = await fetchMovieCast(movie.id);
+      if (castData) setCast(castData.cast || []);
+      
+      const videosData = await fetchMovieVideos(movie.id);
+      if (videosData) setVideos(videosData.results || []);
+      
+      // If TV show, fetch seasons data
+      if (isTVShow) {
+        const tvDetails = await fetchTVShowDetails(movie.id);
+        setTvShowDetails(tvDetails);
+        
+        // Get first season episodes
+        if (tvDetails?.seasons?.length > 0) {
+          const firstSeason = tvDetails.seasons.find(s => s.season_number === 1);
+          if (firstSeason) {
+            const episodes = await fetchSeasonEpisodes(movie.id, 1);
+            setSeasonEpisodes(episodes);
+          }
+        }
+      }
+      
+      // Get streaming links - pass isTVShow, season, episode info
+      const streamLinks = await getStreamingLinks(movie.id, isTVShow, 1, 1);
+      setStreamingLinks(streamLinks);
+      
+      const title = movie.title || movie.original_title || movie.name || "";
+      const dlLinks = await getDownloadLinks(title);
+      setDownloadLinks(dlLinks);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    }
+    setLoading(false);
+  }
+
+  // Handle season change
+  async function handleSeasonChange(seasonNum) {
+    const seasonIndex = seasonNum - 1;
+    setActiveSeason(seasonIndex);
+    setActiveEpisode(0);
+    setIsStreaming(false);
+    
+    // Fetch episodes for the selected season
+    if (isTVShow) {
+      const episodes = await fetchSeasonEpisodes(movie.id, seasonNum);
+      setSeasonEpisodes(episodes);
+      
+      // Update streaming links with new season
+      const streamLinks = await getStreamingLinks(movie.id, isTVShow, seasonNum, 1);
+      setStreamingLinks(streamLinks);
+    }
+  }
+
+  // Handle episode change
+  async function handleEpisodeChange(index) {
+    setActiveEpisode(index);
+    setIsStreaming(true);
+    
+    // Update streaming links with new episode
+    if (isTVShow) {
+      const seasonNum = activeSeason + 1;
+      const episodeNum = index + 1;
+      const streamLinks = await getStreamingLinks(movie.id, isTVShow, seasonNum, episodeNum);
+      setStreamingLinks(streamLinks);
+    }
+  }
+
   if (!movie) {
-    return <div className="streaming-page">No movie data available</div>;
+    return <div className="streaming-page">No data available</div>;
   }
 
   if (loading) {
@@ -85,38 +139,33 @@ export default function Details() {
     );
   }
 
-  const toggleDetails = () => {
-    setShowDetails(!showDetails);
-  };
+  const toggleDetails = () => setShowDetails(!showDetails);
 
   const mainCast = cast.slice(0, 6);
   const stars = cast.slice(0, 3);
 
-  const handleServerChange = (index) => {
-    setActiveServer(index);
-    setShowServers(false);
-    setIsStreaming(true);
+  const handleServerChange = (e, index) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Server clicked:', index, streamingLinks[index]);
+    if (streamingLinks[index]) {
+      setActiveServer(index);
+      setShowServers(false);
+      setIsStreaming(true);
+      console.log('Streaming URL:', streamingLinks[index].url);
+    }
   };
 
-  const handleStreamMovie = () => {
-    setIsStreaming(true);
-  };
+  const handleStream = () => setIsStreaming(true);
 
-  const handleDownloadMovie = (link) => {
-    window.open(link.url, '_blank');
-  };
+  const handleDownload = (link) => window.open(link.url, '_blank');
 
-  const handleSeasonChange = (index) => {
-    setActiveSeason(index);
-    setActiveEpisode(0);
-  };
-
-  const currentSeason = seasons[activeSeason];
-  const currentEpisode = episodes[activeEpisode];
+  // Get real seasons from API
+  const seasons = tvShowDetails?.seasons?.filter(s => s.season_number > 0) || [];
+  const episodes = seasonEpisodes?.episodes || [];
 
   return (
     <div className="streaming-page">
-      {/* Back Button */}
       <button className="back-button" onClick={() => window.history.back()}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
           <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
@@ -124,10 +173,9 @@ export default function Details() {
         Back
       </button>
       
-      {/* Streaming Video Player */}
       <div className="video-player-container">
         <div className="video-player" id="movie-player">
-          {isStreaming && streamingLinks.length > 0 ? (
+          {isStreaming && streamingLinks.length > 0 && streamingLinks[activeServer]?.url ? (
             <iframe
               width="100%"
               height="100%"
@@ -150,27 +198,20 @@ export default function Details() {
               ) : (
                 <>
                   <p>Select a server to stream</p>
-                  <p className="server-hint">Click on a server below, then press Stream Movie</p>
+                  <p className="server-hint">Click on a server below, then press Stream</p>
                 </>
               )}
             </div>
           )}
         </div>
         
-        {/* Server Selection */}
         {streamingLinks.length > 0 && (
           <div className="server-selector">
             <div className="server-tabs">
-              <button 
-                className={`server-tab ${!showServers ? 'active' : ''}`}
-                onClick={() => setShowServers(false)}
-              >
+              <button className={`server-tab ${!showServers ? 'active' : ''}`} onClick={() => setShowServers(false)}>
                 Stream
               </button>
-              <button 
-                className={`server-tab ${showServers ? 'active' : ''}`}
-                onClick={() => setShowServers(true)}
-              >
+              <button className={`server-tab ${showServers ? 'active' : ''}`} onClick={() => setShowServers(true)}>
                 Download
               </button>
             </div>
@@ -178,16 +219,12 @@ export default function Details() {
             {!showServers ? (
               <div className="server-list">
                 {streamingLinks.map((link, index) => (
-                  <button
-                    key={index}
-                    className={`server-item ${activeServer === index ? 'active' : ''}`}
-                    onClick={() => handleServerChange(index)}
-                  >
+                  <button key={index} className={`server-item ${activeServer === index ? 'active' : ''}`} onClick={(e) => handleServerChange(e, index)}>
                     <span className="server-name">{link.server}</span>
                     <span className="server-quality">{link.quality}</span>
                   </button>
                 ))}
-                <button className="stream-btn" onClick={handleStreamMovie}>
+                <button className="stream-btn" onClick={handleStream}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
                     <path d="M8 5v14l11-7z"/>
                   </svg>
@@ -197,11 +234,7 @@ export default function Details() {
             ) : (
               <div className="server-list">
                 {downloadLinks.map((link, index) => (
-                  <button
-                    key={index}
-                    className="server-item download-item"
-                    onClick={() => handleDownloadMovie(link)}
-                  >
+                  <button key={index} className="server-item download-item" onClick={() => handleDownload(link)}>
                     <span className="server-name">{link.server}</span>
                     <span className="server-quality">{link.quality}</span>
                     <span className="server-size">{link.size}</span>
@@ -213,7 +246,6 @@ export default function Details() {
         )}
       </div>
 
-      {/* Details Content */}
       <div className="details-content">
         <div className="details-header">
           <div className="details-rating">
@@ -223,33 +255,24 @@ export default function Details() {
             <span>{movieDetails?.runtime ? `${Math.floor(movieDetails.runtime / 60)}h ${movieDetails.runtime % 60}m` : '2h 28m'}</span>
           </div>
           
-          <h1 
-            className="movie-title-toggle" 
-            onClick={toggleDetails}
-          >
+          <h1 className="movie-title-toggle" onClick={toggleDetails}>
             {movie.title || movie.original_title || movie.name}
-            <svg 
-              className={`dropdown-arrow ${showDetails ? 'open' : ''}`} 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              fill="white"
-            >
+            <svg className={`dropdown-arrow ${showDetails ? 'open' : ''}`} width="24" height="24" viewBox="0 0 24 24" fill="white">
               <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
             </svg>
           </h1>
 
-          {/* Seasons and Episodes for TV Shows */}
-          {isTVShow && (
+          {/* Real Seasons and Episodes for TV Shows */}
+          {isTVShow && seasons.length > 0 && (
             <div className="seasons-episodes">
               <div className="seasons-tabs">
-                {seasons.map((season, index) => (
+                {seasons.map((season) => (
                   <button 
-                    key={index}
-                    className={`season-tab ${activeSeason === index ? 'active' : ''}`}
-                    onClick={() => handleSeasonChange(index)}
+                    key={season.season_number}
+                    className={`season-tab ${activeSeason === season.season_number - 1 ? 'active' : ''}`}
+                    onClick={(e) => { e.preventDefault(); handleSeasonChange(season.season_number); }}
                   >
-                    {season.name}
+                    {season.name || `Season ${season.season_number}`}
                   </button>
                 ))}
               </div>
@@ -257,12 +280,9 @@ export default function Details() {
               <div className="episodes-grid">
                 {episodes.map((episode, index) => (
                   <button 
-                    key={index}
+                    key={episode.id}
                     className={`episode-card ${activeEpisode === index ? 'active' : ''}`}
-                    onClick={() => {
-                      setActiveEpisode(index);
-                      setIsStreaming(true);
-                    }}
+                    onClick={(e) => { e.preventDefault(); handleEpisodeChange(index); }}
                   >
                     <div className="episode-number">{episode.episode_number}</div>
                     <div className="episode-info">
@@ -275,11 +295,10 @@ export default function Details() {
             </div>
           )}
           
-          {/* Dropdown with Description, Cast and Stars */}
           <div className={`details-dropdown ${showDetails ? 'open' : ''}`}>
             <div className="details-section">
               <h3>Description</h3>
-              <p>{movie.overview || "A thrilling cinematic experience awaits."}</p>
+              <p>{movie.overview || "No description available."}</p>
             </div>
             
             <div className="details-section">
@@ -287,11 +306,7 @@ export default function Details() {
               <div className="cast-list">
                 {mainCast.length > 0 ? mainCast.map(actor => (
                   <div key={actor.id} className="cast-item">
-                    <img 
-                      className="cast-avatar" 
-                      src={actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : "https://via.placeholder.com/45"} 
-                      alt={actor.name}
-                    />
+                    <img className="cast-avatar" src={actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : "https://via.placeholder.com/45"} alt={actor.name}/>
                     <div className="cast-info">
                       <span className="cast-name">{actor.name}</span>
                       <span className="cast-character">{actor.character}</span>
@@ -308,11 +323,7 @@ export default function Details() {
               <div className="stars-list">
                 {stars.length > 0 ? stars.map(star => (
                   <div key={star.id} className="star-item">
-                    <img 
-                      className="star-avatar" 
-                      src={star.profile_path ? `https://image.tmdb.org/t/p/w185${star.profile_path}` : "https://via.placeholder.com/45"} 
-                      alt={star.name}
-                    />
+                    <img className="star-avatar" src={star.profile_path ? `https://image.tmdb.org/t/p/w185${star.profile_path}` : "https://via.placeholder.com/45"} alt={star.name}/>
                     <div className="star-info">
                       <span className="star-name">{star.name}</span>
                       <span className="star-role">{star.character}</span>

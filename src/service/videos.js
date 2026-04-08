@@ -12,9 +12,15 @@ export const fetchMovieVideos = async (movieId) => {
   };
 
   try {
-    const response = await fetch(`${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`, options);
+    const response = await fetch(`${BASE_URL}/movie/${movieId}/videos?language=en-US`, options);
     if (!response.ok) {
-      throw new Error('Failed to fetch videos');
+      // Try alternative endpoint for TV shows
+      const tvResponse = await fetch(`${BASE_URL}/tv/${movieId}/videos?language=en-US`, options);
+      if (!tvResponse.ok) {
+        throw new Error('Failed to fetch videos');
+      }
+      const data = await tvResponse.json();
+      return data;
     }
     const data = await response.json();
     return data;

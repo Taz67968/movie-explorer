@@ -3,6 +3,7 @@ const API_KEY = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0ZWYzNjNmOWY5YTNjNTUzNTE
 const BASE_URL = "https://api.themoviedb.org/3";
 
 export const fetchMovieCast = async (movieId) => {
+  // Use basic auth header, not query param
   const options = {
     method: "GET",
     headers: {
@@ -12,14 +13,19 @@ export const fetchMovieCast = async (movieId) => {
   };
 
   try {
-    const response = await fetch(`${BASE_URL}/movie/${movieId}/credits?api_key=${API_KEY}`, options);
+    // Try movie endpoint first
+    const response = await fetch(`${BASE_URL}/movie/${movieId}/credits?language=en-US`, options);
     if (!response.ok) {
-      throw new Error('Failed to fetch cast');
+      // Try TV endpoint for TV shows
+      const tvResponse = await fetch(`${BASE_URL}/tv/${movieId}/credits?language=en-US`, options);
+      if (!tvResponse.ok) {
+        return null;
+      }
+      return await tvResponse.json();
     }
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error('Failed to fetch cast', error);
+    console.error("Failed to fetch cast", error);
     return null;
   }
 };
