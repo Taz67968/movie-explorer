@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import fetchMovieDetails from "../service/movieDetails";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
@@ -8,18 +8,53 @@ import { getStreamingLinks, getDownloadLinks } from "../service/streaming";
 
 export default function Details() {
   const location = useLocation();
-  const navigate = useNavigate();
   const { id } = useParams(); // Get movie ID from URL
-  const { movie: initialMovie } = location.state || {};
   const fetchAttempted = useRef(false); // Track if we've tried to fetch movie data
   
-  // Use state to persist movie data - check location.state first, then use URL param
-  const [movie, setMovie] = useState(initialMovie);
+  // Initialize movie from location.state or sessionStorage or URL
+  const getInitialMovie = () => {
+    // First check location.state
+    if (location.state?.movie) {
+      // Save to sessionStorage for persistence
+      sessionStorage.setItem('currentMovie', JSON.stringify(location.state.movie));
+      return location.state.movie;
+    }
+    // Then check sessionStorage
+    const stored = sessionStorage.getItem('currentMovie');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  };
+  
+  // Initialize streaming state from sessionStorage
+  const getInitialStreamingState = () => {
+    const isStreamingStored = sessionStorage.getItem('isStreaming');
+    const activeServerStored = sessionStorage.getItem('activeServer');
+    return {
+      isStreaming: isStreamingStored === 'true',
+      activeServer: activeServerStored ? parseInt(activeServerStored, 10) : 0
+    };
+  };
+  
+  const [movie, setMovie] = useState(getInitialMovie);
+  const initialStreamState = getInitialStreamingState();
+  const [isStreaming, setIsStreaming] = useState(initialStreamState.isStreaming);
+  const [activeServer, setActiveServer] = useState(initialStreamState.activeServer);
   
   // Debug: log navigation
   useEffect(() => {
     console.log('Details mounted with movie:', location.state?.movie?.title, 'ID:', location.state?.movie?.id, 'URL ID:', id);
-    return () => console.log('Details unmounting');
+    return () => {
+      console.log('Details unmounting');
+      // Clear streaming state but keep movie data for potential returns
+      sessionStorage.removeItem('isStreaming');
+      sessionStorage.removeItem('activeServer');
+    };
   }, []);
   
   // Redirect if no movie data
@@ -37,9 +72,7 @@ export default function Details() {
   const [loading, setLoading] = useState(true);
   const [streamingLinks, setStreamingLinks] = useState([]);
   const [downloadLinks, setDownloadLinks] = useState([]);
-  const [activeServer, setActiveServer] = useState(0);
   const [showServers, setShowServers] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(false);
   const [activeSeason, setActiveSeason] = useState(0);
   const [activeEpisode, setActiveEpisode] = useState(0);
   
@@ -182,16 +215,28 @@ export default function Details() {
     e.stopPropagation();
     console.log('Server clicked:', index, streamingLinks[index]);
     if (streamingLinks[index]) {
+      // Open streaming site in a new tab
+      window.open(streamingLinks[index].url, '_blank');
+      
+      // Save streaming state to sessionStorage for persistence
       setActiveServer(index);
       setShowServers(false);
-      setIsStreaming(true);
+      sessionStorage.setItem('isStreaming', 'true');
+      sessionStorage.setItem('activeServer', index.toString());
       console.log('Streaming URL:', streamingLinks[index].url);
     } else {
       console.log('No server at index:', index);
     }
   };
 
-  const handleStream = () => setIsStreaming(true);
+  const handleStream = () => {
+    // Open current streaming URL in new tab
+    if (streamingLinks[activeServer]?.url) {
+      window.open(streamingLinks[activeServer].url, '_blank');
+    }
+    setIsStreaming(true);
+    sessionStorage.setItem('isStreaming', 'true');
+  };
 
   const handleDownload = (link) => window.open(link.url, '_blank');
 
