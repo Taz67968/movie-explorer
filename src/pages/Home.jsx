@@ -48,6 +48,10 @@ export default function Home() {
     setFavorites(getFavorites());
   };
 
+  const handleSimilarMovieClick = (movie) => {
+    setSelectedMovie(movie);
+  };
+
   useEffect(() => {
     setFavorites(getFavorites());
   }, []);
@@ -249,6 +253,7 @@ export default function Home() {
           onClose={handleCloseModal}
           onWatchNow={handleWatchNow}
           onFavoriteChange={handleFavoriteChange}
+          onMovieClick={handleSimilarMovieClick}
         />
       )}
       </div>

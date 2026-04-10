@@ -3550,3 +3550,174 @@ input {
     font-size: 12px;
   }
 }
+
+/* Similar Movies Section */
+.similar-movies-section {
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #0d0d0d;
+}
+
+.similar-movies-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #fff;
+  padding-left: 10px;
+}
+
+.similar-movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 10px;
+}
+
+.similar-movie-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.similar-movie-card:hover {
+  transform: scale(1.05);
+}
+
+.similar-movie-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background-color: #2a2a2a;
+}
+
+.similar-movie-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.similar-movie-poster .no-poster {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 12px;
+}
+
+.similar-movie-info {
+  padding: 10px;
+}
+
+.similar-movie-info h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.similar-movie-year {
+  font-size: 12px;
+  color: #888;
+  margin-right: 8px;
+}
+
+.similar-movie-rating {
+  font-size: 12px;
+  color: #ff4949;
+}
+
+/* Responsive for Similar Movies */
+@media (max-width: 768px) {
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .similar-movies-section {
+    padding: 12px;
+  }
+  
+  .similar-movies-title {
+    font-size: 16px;
+  }
+  
+  .similar-movies-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+  }
+}
+
+/* Modal Similar Movies Section */
+.modal-similar-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-similar-section .similar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.modal-similar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.modal-similar-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  background-color: #1a1a1a;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.modal-similar-card:hover {
+  transform: scale(1.05);
+}
+
+.modal-similar-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background-color: #2a2a2a;
+}
+
+.modal-similar-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-similar-poster .no-poster {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 10px;
+}
+
+.modal-similar-info {
+  padding: 6px;
+}
+
+.modal-similar-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

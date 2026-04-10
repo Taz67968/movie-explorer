@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import fetchMovieDetails from "../service/movieDetails";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
 import { fetchTVShowDetails, fetchSeasonEpisodes } from "../service/tvShowDetails";
 import { getStreamingLinks, getDownloadLinks } from "../service/streaming";
+import { fetchSimilarMovies, fetchMovieRecommendations, fetchSimilarTVShows, fetchTVShowRecommendations } from "../service/similar";
 
 export default function Details() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { id } = useParams(); // Get movie ID from URL
   const fetchAttempted = useRef(false); // Track if we've tried to fetch movie data
   
@@ -79,6 +81,9 @@ export default function Details() {
   // TV Show data
   const [tvShowDetails, setTvShowDetails] = useState(null);
   const [seasonEpisodes, setSeasonEpisodes] = useState(null);
+
+  // Similar movies data
+  const [similarMovies, setSimilarMovies] = useState([]);
 
   // Check if it's a TV show
   const isTVShow = !movie?.title && movie?.name;
@@ -152,6 +157,31 @@ export default function Details() {
       const title = movie.title || movie.original_title || movie.name || "";
       const dlLinks = await getDownloadLinks(title);
       setDownloadLinks(dlLinks);
+      
+      // Fetch similar movies/recommendations
+      if (isTVShow) {
+        const [similar, recommendations] = await Promise.all([
+          fetchSimilarTVShows(movie.id),
+          fetchTVShowRecommendations(movie.id)
+        ]);
+        // Combine both, removing duplicates
+        const combined = [...similar, ...recommendations];
+        const unique = combined.filter((item, index, self) => 
+          index === self.findIndex((t) => t.id === item.id)
+        );
+        setSimilarMovies(unique.slice(0, 10));
+      } else {
+        const [similar, recommendations] = await Promise.all([
+          fetchSimilarMovies(movie.id),
+          fetchMovieRecommendations(movie.id)
+        ]);
+        // Combine both, removing duplicates
+        const combined = [...similar, ...recommendations];
+        const unique = combined.filter((item, index, self) => 
+          index === self.findIndex((t) => t.id === item.id)
+        );
+        setSimilarMovies(unique.slice(0, 10));
+      }
     } catch (error) {
       console.error("Error loading data:", error);
     }

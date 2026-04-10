@@ -41,6 +41,10 @@ export default function Series() {
     setFavorites(getFavorites());
   };
 
+  const handleSimilarShowClick = (show) => {
+    setSelectedShow(show);
+  };
+
   useEffect(() => {
     setFavorites(getFavorites());
   }, []);
@@ -179,6 +183,7 @@ export default function Series() {
             onClose={handleCloseModal}
             onWatchNow={handleWatchNow}
             onFavoriteChange={handleFavoriteChange}
+            onMovieClick={handleSimilarShowClick}
           />
         )}
       </div>

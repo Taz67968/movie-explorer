@@ -3,26 +3,48 @@ import PropTypes from "prop-types";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
 import { addToFavorites, removeFromFavorites, isFavorite } from "../service/likes";
+import { fetchSimilarMovies, fetchMovieRecommendations, fetchSimilarTVShows, fetchTVShowRecommendations } from "../service/similar";
 
-export default function MovieModal({ movie, onClose, onWatchNow, onFavoriteChange }) {
+export default function MovieModal({ movie, onClose, onWatchNow, onFavoriteChange, onMovieClick }) {
   const [cast, setCast] = useState([]);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFav, setIsFav] = useState(false);
+  const [similarMovies, setSimilarMovies] = useState([]);
+  
+  // Check if it's a TV show
+  const isTVShow = !movie?.title && movie?.name;
 
   useEffect(() => {
     if (movie) {
       setLoading(true);
       setIsFav(isFavorite(movie.id));
+      const isTV = !movie?.title && movie?.name;
+      
+      // Fetch cast, videos, and similar movies in parallel
+      const similarFetch = isTV 
+        ? Promise.all([fetchSimilarTVShows(movie.id), fetchTVShowRecommendations(movie.id)])
+        : Promise.all([fetchSimilarMovies(movie.id), fetchMovieRecommendations(movie.id)]);
+      
       Promise.all([
         fetchMovieCast(movie.id),
-        fetchMovieVideos(movie.id)
-      ]).then(([castData, videosData]) => {
+        fetchMovieVideos(movie.id),
+        similarFetch
+      ]).then(([castData, videosData, similarData]) => {
         if (castData) {
           setCast(castData.cast || []);
         }
         if (videosData) {
           setVideos(videosData.results || []);
+        }
+        // Process similar movies
+        if (similarData) {
+          const [similar, recommendations] = similarData;
+          const combined = [...similar, ...recommendations];
+          const unique = combined.filter((item, index, self) => 
+            index === self.findIndex((t) => t.id === item.id)
+          );
+          setSimilarMovies(unique.slice(0, 6));
         }
         setLoading(false);
       }).catch(() => {
@@ -155,6 +177,41 @@ export default function MovieModal({ movie, onClose, onWatchNow, onFavoriteChang
                 <p>Loading cast information...</p>
               </div>
             )}
+
+            {/* Similar Movies in Modal */}
+            {similarMovies.length > 0 && (
+              <div className="modal-similar-section">
+                <h3 className="similar-title">More Like This</h3>
+                <div className="modal-similar-grid">
+                  {similarMovies.map((item) => (
+                    <div 
+                      key={item.id} 
+                      className="modal-similar-card"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onMovieClick) {
+                          onMovieClick(item);
+                        }
+                      }}
+                    >
+                      <div className="modal-similar-poster">
+                        {item.poster_path ? (
+                          <img 
+                            src={`https://image.tmdb.org/t/p/w200${item.poster_path}`} 
+                            alt={item.title || item.name} 
+                          />
+                        ) : (
+                          <div className="no-poster">No Image</div>
+                        )}
+                      </div>
+                      <div className="modal-similar-info">
+                        <p className="modal-similar-name">{item.title || item.name}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -167,4 +224,5 @@ MovieModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onWatchNow: PropTypes.func.isRequired,
   onFavoriteChange: PropTypes.func,
+  onMovieClick: PropTypes.func,
 };
