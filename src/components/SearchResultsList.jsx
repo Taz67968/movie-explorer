@@ -14,7 +14,7 @@ export const SetResultList = ({ results }) => {
 
   return (
     <div className="result-list">
-      {results.map((result, id) => {
+      {results.slice(0, 8).map((result, id) => {
         const title = result.title || result.name || "Unknown Title";
         const year = result.release_date?.split("-")[0] || result.first_air_date?.split("-")[0] || "";
         const posterUrl = result.poster_path 
@@ -34,7 +34,12 @@ export const SetResultList = ({ results }) => {
             )}
             <div className="result-info">
               <div className="result-title">{title}</div>
-              {year && <div className="result-year">{year}</div>}
+              <div className="result-row">
+                {year && <div className="result-year">{year}</div>}
+                <span className={`media-type-badge ${result.media_type}`}>
+                  {result.media_type === 'movie' ? 'Movie' : 'TV Show'}
+                </span>
+              </div>
             </div>
           </div>
         );
