@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import fetchMovieDetails from "../service/movieDetails";
 import fetchMovieCast from "../service/cast";
 import fetchMovieVideos from "../service/videos";
@@ -9,7 +9,6 @@ import { fetchSimilarMovies, fetchMovieRecommendations, fetchSimilarTVShows, fet
 
 export default function Details() {
   const location = useLocation();
-  const navigate = useNavigate();
   const { id } = useParams(); // Get movie ID from URL
   const fetchAttempted = useRef(false); // Track if we've tried to fetch movie data
   
@@ -286,15 +285,29 @@ export default function Details() {
       <div className="video-player-container">
         <div className="video-player" id="movie-player">
           {isStreaming && streamingLinks.length > 0 && streamingLinks[activeServer]?.url ? (
-            <iframe
-              width="100%"
-              height="100%"
-              src={streamingLinks[activeServer].url}
-              title="Streaming"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+            <div className="external-player-notice">
+              <div className="notice-icon">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="white">
+                  <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                </svg>
+              </div>
+              <h3>Opening in New Tab</h3>
+              <p>Your stream should open automatically in a new tab.</p>
+              <p className="notice-hint">If it doesn&apos;t, please allow popups for this site.</p>
+              <button 
+                className="stream-btn open-new-tab"
+                onClick={() => {
+                  if (streamingLinks[activeServer]?.url) {
+                    window.open(streamingLinks[activeServer].url, '_blank');
+                  }
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                  <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
+                </svg>
+                Click to Open Stream
+              </button>
+            </div>
           ) : (
             <div className="video-placeholder streaming-placeholder">
               <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
@@ -303,7 +316,7 @@ export default function Details() {
               {isTVShow ? (
                 <>
                   <p>Select a season and episode</p>
-                  <p className="server-hint">Choose a server below to stream</p>
+                  <p className="server-hint">Choose a server below, then press Stream</p>
                 </>
               ) : (
                 <>
