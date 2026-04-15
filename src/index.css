@@ -452,29 +452,6 @@ input {
     border-radius: 40%;
   }
 }
-.result-list {
-  background-color: rgba(16, 17, 17, 0.5);
-  text-align: justify;
-  margin-left: 3px;
-  scrollbar-width: thin;
-  scrollbar-color: black transparent;
-  position: absolute;
-  max-height: 200px;
-  max-width: 163px;
-  overflow-y: auto;
-  z-index: 1000;
-  border-radius: 7%;
-  margin-top: 5px;
-  div {
-    margin: 5px;
-    cursor: pointer;
-  }
-}
-
-.result-list div:hover {
-  color: #ff4949;
-  transition: ease-in-out 0.5s;
-}
 
 /* Streaming Page Styles */
 .streaming-page {
